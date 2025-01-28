@@ -12,6 +12,11 @@ format:
     embed-resources: true
 bibliography: references.bib
 biblio-style: apa
+editor: 
+  citation: "Rohr, Björn (2025). *SampcompR for Response Bias Estimation*. GitHub Repository. URL:  https://github.com/BjoernRohr/KODAQS-Toolbox-SampcompR"
+  markdown: 
+    wrap: 72
+prefer-html: true
 
 ---
 
