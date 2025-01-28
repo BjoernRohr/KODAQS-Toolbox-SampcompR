@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rohr Björn">
+
+<title>SampcompR for Response Bias Estimation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="Tool_SampcompR_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Tool_SampcompR_files/libs/quarto-html/quarto.js"></script>
+<script src="Tool_SampcompR_files/libs/quarto-html/popper.min.js"></script>
+<script src="Tool_SampcompR_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Tool_SampcompR_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Tool_SampcompR_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Tool_SampcompR_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Tool_SampcompR_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Tool_SampcompR_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Tool_SampcompR_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="Tool_SampcompR_files/libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="Tool_SampcompR_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="Tool_SampcompR.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">SampcompR for Response Bias Estimation</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Rohr Björn </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">Invalid Date</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="at-a-glance" class="level1">
+<h1>At a glance</h1>
+<!-- Summary with main points of the tool in 2-3 bullet points -->
+<section id="table-of-content" class="level3">
+<h3 class="anchored" data-anchor-id="table-of-content">Table of Content</h3>
+<p><a href="#introduction">Introduction</a></p>
+<p><a href="#setup">Setup</a></p>
+<p><a href="#tool-application">Tool application</a></p>
+<p><a href="#conclusion-and-recommendations">Conclusion and recommendations</a></p>
+</section>
+</section>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+</section>
+<section id="set-up" class="level1">
+<h1>Set-up</h1>
+<section id="data-for-representation-bias-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="data-for-representation-bias-analysis">Data for representation bias analysis</h2>
+<p>For this tutorial, we use data from an old American survey, called card (n=3010). Although this dataset is rather dated, it is easily available and also suitable do demonstrate the use of the sampcompR package, without much preperation. it consists of several demographic variables as well as some variables to generate groupings, as well as some additional variables.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Although available in the wooldridge package <span class="citation" data-cites="SheaWooldridge">(<a href="#ref-SheaWooldridge" role="doc-biblioref">Shea 2024</a>)</span> the Card data, was also added to sampcompR and originates from Professor Card (1995):</p>
+<p>D. Card (1995), Using Geographic Variation in College Proximity to Estimate the Return to Schooling, in Aspects of Labour Market Behavior: Essays in Honour of John Vanderkamp. Ed. L.N. Christophides, E.K. Grant, and R. Swidinsky, 201-222. Toronto: University of Toronto Press</p>
+</div>
+</div>
+<p>Some interesting items, as described in the card sample, are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Items</th>
+<th>Institution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>age</strong></td>
+<td>in years</td>
+</tr>
+<tr class="even">
+<td><strong>educ</strong></td>
+<td>years of schooling, 1976</td>
+</tr>
+<tr class="odd">
+<td><strong>fatheduc</strong></td>
+<td>father’s schooling</td>
+</tr>
+<tr class="even">
+<td><strong>motheduc</strong></td>
+<td>mother’s schooling</td>
+</tr>
+<tr class="odd">
+<td><strong>wage</strong></td>
+<td>hourly wage in cents, 1976</td>
+</tr>
+<tr class="even">
+<td><strong>IQ</strong></td>
+<td>IQ score</td>
+</tr>
+<tr class="odd">
+<td><strong>married</strong></td>
+<td>1 if married, 1976</td>
+</tr>
+<tr class="even">
+<td><strong>KWW</strong></td>
+<td>knowledge world of work score</td>
+</tr>
+<tr class="odd">
+<td><strong>south</strong></td>
+<td>1 if in south, 1976</td>
+</tr>
+<tr class="even">
+<td><strong>black</strong></td>
+<td>1 if black</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">Getting started</h2>
+<p>To use sampcompR <span class="citation" data-cites="rohrSampcompRComparingVisualizing2024">(<a href="#ref-rohrSampcompRComparingVisualizing2024" role="doc-biblioref">Bjoern Rohr and Felderer 2024</a>)</span>, we first need to install the package from the repository of CRAN, the Comprehensive R Archive Network. For installation, we can use the following commands:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Installing SampcompR</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("sampcompR")</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading SampcompR</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sampcompR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In addition, to the the package, we also need data for comparison. Typically a data frame is required, containing the variables for which we want to estimate bias, alongside benchmark information. Benchmark information is best also provided in the form of a data frame, although, for example, if the goal is to estimate bias on an univariate level, a named vector of means (e.g., from a population census) is sufficient. For the purpose of this application example, we perform the bias estimation based on a data frame named <code>card</code> in the <code>wooldridge</code><span class="citation" data-cites="SheaWooldridge">(<a href="#ref-SheaWooldridge" role="doc-biblioref">Shea 2024</a>)</span> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get Data for comparison</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"card"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>whole_card<span class="ot">&lt;-</span>card</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># we recode the married variable to a dummy, idicating of the respondents are married or not, which will be needed later. </span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>whole_card<span class="sc">$</span>married[whole_card<span class="sc">$</span>married<span class="sc">!=</span><span class="dv">1</span>]<span class="ot">&lt;-</span><span class="dv">0</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Split the data frame to generate example data</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>north<span class="ot">&lt;-</span>whole_card[whole_card<span class="sc">$</span>south<span class="sc">==</span><span class="dv">0</span>,]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>white<span class="ot">&lt;-</span>whole_card[whole_card<span class="sc">$</span>black<span class="sc">==</span><span class="dv">0</span>,]</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># load some additional packages needed in this application</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As described above, for this application example we assume that (1) we have a sample that only contains respondents living in the <code>North</code> and want to estimate the bias if this should be generalized to the whole population, and further (2) we have a sample containing only <code>White</code> respondents that should be generalized. Although those scenarios are only for the purpose of demonstrating the tool, there can be rather similar scenarios in your own work. For example if you have conducted a mixed mode survey (e.g., online and offline mode) and want to know for future surveys, if it is okay, to only recruit respondents in one of the modes (e.g., online mode).</p>
+</section>
+</section>
+<section id="tool-application" class="level1">
+<h1>Tool application</h1>
+<section id="univariate-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="univariate-comparison">Univariate Comparison</h2>
+<p>Now that we have data frames we want to compare that are gathered similarly, we will start with a univariate comparison.</p>
+<div class="cell" data-fig.hight="12">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sampcompR)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>univar_data<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">uni_compare</span>(<span class="at">dfs =</span> <span class="fu">c</span>(<span class="st">"north"</span>,<span class="st">"white"</span>),</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">benchmarks =</span> <span class="fu">c</span>(<span class="st">"whole_card"</span>,<span class="st">"whole_card"</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">variables=</span><span class="fu">c</span>(<span class="st">"age"</span>,<span class="st">"educ"</span>,<span class="st">"fatheduc"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>                                                <span class="st">"motheduc"</span>,<span class="st">"wage"</span>,<span class="st">"IQ"</span>),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">funct =</span> <span class="st">"rel_mean"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">nboots=</span><span class="dv">0</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">summetric=</span><span class="st">"avg2"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">data=</span>T,<span class="at">type =</span> <span class="st">"comparison"</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>sampcompR<span class="sc">::</span><span class="fu">plot_uni_compare</span>(univar_data,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                            <span class="at">name_dfs=</span><span class="fu">c</span>(<span class="st">"North"</span>,<span class="st">"White"</span>),</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                            <span class="at">name_benchmarks=</span><span class="fu">c</span>(<span class="st">"Whole Card"</span>,<span class="st">"Whole Card"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tool_SampcompR_files/figure-html/univariate_comparison-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here we can see a plot showing the difference in mean for several variables (indicated in the <code>variables</code> parameter) in the data frames. The first data frame, named as a character in <code>dfs</code>, is compared to the first data frame in <code>benchmarks</code>, while the second is compared to the second, and so forth. Another important parameter is <code>nboots</code>. It indicates the number of bootstraps to calculate the confidence intervals. We recommend using at least 2000 to 10000 bootstraps, although this may take a while. It is also possible to set <code>nboots==0</code>, as we did in this example. In this case, the confidence intervals will be calculated analytically. The upper right corner of the plot shows the average relative difference in mean, which is chosen by using <code>summetric=="avg2"</code>. Last, the parameter data indicates if the function should return a <code>uni_compare_object</code> which can be used in other package functions (e.g., <code>plot_uni_compare</code>).</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Be careful:">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Be careful:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>High or low amounts of bias in some estimates does not necessarily mean that the survey has similar amounts of bias in other variables. This would only be the case, if those variables are highly correlated to the estimates for which bias was estimated. For variables, where no benchmark is available careful consideration is needed.</p>
+</div>
+</div>
+<p>Also, the difference can be shown in a table that can be helpful to document the results. We can easily get a good result table by adding the resulting table to other functions (e.g., the kable() function in RMarkdown).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>uni_output_table<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">uni_compare_table</span>(univar_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Table 1: Difference in Relative Means off different Survey Groups</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Variables</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">North</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">White</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">age</td>
+<td style="text-align: center; width: 4em;">0.002</td>
+<td style="text-align: center; width: 4em;">0.003</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(-0.003, 0.007)</td>
+<td style="text-align: center; width: 4em;">(-0.002, 0.007)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">educ</td>
+<td style="text-align: center; width: 4em;">0.033</td>
+<td style="text-align: center; width: 4em;">0.030</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">( 0.025, 0.042)</td>
+<td style="text-align: center; width: 4em;">( 0.022, 0.038)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">fatheduc</td>
+<td style="text-align: center; width: 4em;">0.063</td>
+<td style="text-align: center; width: 4em;">0.053</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">( 0.046, 0.080)</td>
+<td style="text-align: center; width: 4em;">( 0.038, 0.068)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">motheduc</td>
+<td style="text-align: center; width: 4em;">0.054</td>
+<td style="text-align: center; width: 4em;">0.049</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">( 0.041, 0.067)</td>
+<td style="text-align: center; width: 4em;">( 0.037, 0.061)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">wage</td>
+<td style="text-align: center; width: 4em;">0.096</td>
+<td style="text-align: center; width: 4em;">0.068</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">( 0.074, 0.117)</td>
+<td style="text-align: center; width: 4em;">( 0.049, 0.087)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">IQ</td>
+<td style="text-align: center; width: 4em;">0.021</td>
+<td style="text-align: center; width: 4em;">0.026</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">( 0.014, 0.029)</td>
+<td style="text-align: center; width: 4em;">( 0.020, 0.032)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">Average Error</td>
+<td style="text-align: center; width: 4em;">0.045</td>
+<td style="text-align: center; width: 4em;">0.038</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;">RANK</td>
+<td style="text-align: center; width: 4em;">2</td>
+<td style="text-align: center; width: 4em;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">N</td>
+<td style="text-align: center; width: 4em;">1358 - 1795</td>
+<td style="text-align: center; width: 4em;">1764 - 2307</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>The table displays the difference between dfs and benchmarks for all variables, the confidence intervals, and the summary metric specified when creating the <code>uni_compare_object</code> for every comparison. As we can see in the table, as well as in the plot before, surveying only respondents living in the <code>North</code> would have let to an overestimation of education, wage and IQ, however the age would have been estimated rather similar. We find similar results for the second comparison. Of cause the data frame for this example is rather dated and a newer data frame might have led to different results.</p>
+</section>
+<section id="bivariate-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="bivariate-comparison">Bivariate Comparison</h2>
+<p>As with the univariate comparison, we start with a general function to calculate the bivariate difference between the data frames and plot the results.</p>
+<div class="cell" data-fig.hight="12">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>biv_data<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">biv_compare</span>(<span class="at">dfs =</span> <span class="fu">c</span>(<span class="st">"north"</span>,<span class="st">"white"</span>),</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">benchmarks =</span> <span class="fu">c</span>(<span class="st">"whole_card"</span>,<span class="st">"whole_card"</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">variables=</span> <span class="fu">c</span>(<span class="st">"age"</span>,<span class="st">"educ"</span>,<span class="st">"fatheduc"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                                             <span class="st">"motheduc"</span>,<span class="st">"wage"</span>,<span class="st">"IQ"</span>),</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">data=</span>T, <span class="at">corrtype =</span> <span class="st">"rho"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">weight =</span> <span class="st">"weight"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">id=</span><span class="st">"id"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>sampcompR<span class="sc">::</span><span class="fu">plot_biv_compare</span>(biv_data,<span class="at">plots_label=</span><span class="fu">c</span>(<span class="st">"North"</span>,<span class="st">"White"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tool_SampcompR_files/figure-html/bivariate_comparison-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In this comparison, the Pearson’s r correlations of all variables indicated in the <code>variables</code> parameter are compared between the data frames and benchmarks. The plot shows the difference in three categories. A correlation is green (Same) for one of two reasons. On the one hand, it can be that the Pearson’s r correlation of this variable pair is not significant in the data frame and in the benchmark. On the other hand, it can be that both z standardized Pearson’s r values are not significantly different. If neither of these conditions is true, the plot’s correlations are marked yellow (Small Diff) or red (Large Diff). To be red, it must also fulfill one of two additional conditions. The Pearson’s r correlations could be of different directions (e.g., one is positive, while the other is negative). Second, it could be that one of them is double the size of the other.</p>
+<p>In our example, we can see on the left that the a survey containing only respondents living in the <code>North</code> is very different from the complete survey regarding the investigated bivariate correlations. Only 46.7% of all correlations are similar between both groups (<code>Same</code>) and would lead to similar interpretations measured with either group of the survey. 40.0% of correlations show minor differences (<code>Small Diff</code>), meaning that similar interpretations may not be guaranteed, while 13.3% of the correlations are very different (<code>Large Diff</code>) between the groups. The right half of the plot shows the comparison between <code>White</code> respondents and the whole survey, where similar results are found.</p>
+<p>As before, we can also take a closer look at the exact values by putting the <code>biv_compare_object</code> into the <code>biv_compare_table</code> function of our package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Difference correlation matrix of the first comparison</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>table_biv1<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">biv_compare_table</span>(biv_data,<span class="at">type =</span> <span class="st">"diff"</span>,<span class="at">comparison_number=</span><span class="dv">1</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Table 2: Difference in Pearson’s r for the North/South Sample</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">age</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">educ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">fatheduc</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">motheduc</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">wage</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">IQ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">age</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;">educ</td>
+<td style="text-align: center; width: 4em;">0.05</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">fatheduc</td>
+<td style="text-align: center; width: 4em;">-0.02</td>
+<td style="text-align: center; width: 4em;">-0.07*</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;">motheduc</td>
+<td style="text-align: center; width: 4em;">-0.04</td>
+<td style="text-align: center; width: 4em;">-0.09***</td>
+<td style="text-align: center; width: 4em;">-0.06**</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">wage</td>
+<td style="text-align: center; width: 4em;">0.05</td>
+<td style="text-align: center; width: 4em;">-0.11***</td>
+<td style="text-align: center; width: 4em;">-0.10**</td>
+<td style="text-align: center; width: 4em;">-0.12***</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;">IQ</td>
+<td style="text-align: center; width: 4em;">0.01</td>
+<td style="text-align: center; width: 4em;">-0.01</td>
+<td style="text-align: center; width: 4em;">-0.08*</td>
+<td style="text-align: center; width: 4em;">-0.07*</td>
+<td style="text-align: center; width: 4em;">-0.06</td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>Using <code>type = diff</code> gives us a matrix for the difference in Pearson’s r between the surveys, while <code>comparison_number = 1</code> indicates that the table should be for the first comparison (between the<code>north</code> and the whole sample). Here we can again see which correlations significantly differ between the surveys and to what extent. However, to know why the colors are as they are in the plot, we must also look at the individual correlation matrices for both surveys. Here we only look at the tables for comparing <code>north</code> versus the whole sample respondents as an example.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># North correlation matrix of the first comparison</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>table_biv2<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">biv_compare_table</span>(biv_data,<span class="at">type =</span> <span class="st">"dfs"</span>,<span class="at">comparison_number=</span><span class="dv">1</span>) </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># South correlation matrix of the first comparison</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>table_biv3<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">biv_compare_table</span>(biv_data,<span class="at">type =</span> <span class="st">"benchmarks"</span>,<span class="at">comparison_number=</span><span class="dv">1</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Table 3: Pearson’s r correlation matrix for the North Sample</strong></p>
+<table class="table table-striped table-hover table-condensed caption-top" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">age</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">educ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">fatheduc</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">motheduc</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">wage</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">IQ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">age</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;">educ</td>
+<td style="text-align: center; width: 4em;">0.04</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">fatheduc</td>
+<td style="text-align: center; width: 4em;">-0.08**</td>
+<td style="text-align: center; width: 4em;">0.41***</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;">motheduc</td>
+<td style="text-align: center; width: 4em;">-0.08**</td>
+<td style="text-align: center; width: 4em;">0.36***</td>
+<td style="text-align: center; width: 4em;">0.57***</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">wage</td>
+<td style="text-align: center; width: 4em;">0.35***</td>
+<td style="text-align: center; width: 4em;">0.19***</td>
+<td style="text-align: center; width: 4em;">0.09***</td>
+<td style="text-align: center; width: 4em;">0.08***</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;">IQ</td>
+<td style="text-align: center; width: 4em;">-0.05</td>
+<td style="text-align: center; width: 4em;">0.50***</td>
+<td style="text-align: center; width: 4em;">0.26***</td>
+<td style="text-align: center; width: 4em;">0.23***</td>
+<td style="text-align: center; width: 4em;">0.13***</td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+</tbody>
+</table>
+
+
+<p><strong>Table 4: Pearson’s r correlation matrix for the Whole Crad Survey</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">age</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">educ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">fatheduc</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">motheduc</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">wage</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">IQ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">age</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;">educ</td>
+<td style="text-align: center; width: 4em;">-0.01</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">fatheduc</td>
+<td style="text-align: center; width: 4em;">-0.06**</td>
+<td style="text-align: center; width: 4em;">0.47***</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;">motheduc</td>
+<td style="text-align: center; width: 4em;">-0.04*</td>
+<td style="text-align: center; width: 4em;">0.45***</td>
+<td style="text-align: center; width: 4em;">0.63***</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">wage</td>
+<td style="text-align: center; width: 4em;">0.30***</td>
+<td style="text-align: center; width: 4em;">0.30***</td>
+<td style="text-align: center; width: 4em;">0.19***</td>
+<td style="text-align: center; width: 4em;">0.20***</td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;">IQ</td>
+<td style="text-align: center; width: 4em;">-0.06**</td>
+<td style="text-align: center; width: 4em;">0.51***</td>
+<td style="text-align: center; width: 4em;">0.33***</td>
+<td style="text-align: center; width: 4em;">0.31***</td>
+<td style="text-align: center; width: 4em;">0.19***</td>
+<td style="text-align: center; width: 4em;"></td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>This shows us the whole picture. Looking at the correlation between wage and fathers education, for example, we can see that the correlations in both surveys are different. While, the correlation is positive and small in the north group, stronger for the in the whole survey. Here, in addition to the conditions for a slight difference, one condition for a <code>Large Diff</code> are true (i.e., one Pearson’s r value is at least double the size if the other, 0.09 vs.&nbsp;0.19). Therefore, we could come to very different conclusions measuring those correlations for either group.</p>
+</section>
+<section id="multivariate-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="multivariate-comparison">Multivariate Comparison</h2>
+<p>When we want to know how different certain data frames or sub-data frames are, it may also be interesting to see if those differences exist in multivariate comparisons. For this, the first step is to choose the multivariate models we want to compare. This function <code>(multi_compare())</code> is restricted to any model commutable with <code>glm()</code> (without weighting) or <code>svyglm()</code> (when weights are provided). In this example, we want to see if there are differences between the groups when looking at the regression of <code>age</code>, <code>father's education</code>, <code>mother's education</code>, and <code>IQ</code> on wage and education.</p>
+<p>After choosing independent and dependent variables, all information can be given into <code>multi_compare()</code>. For this comparison, three similar regression models are performed. One model with either survey and one model with the combined surveys, including an interaction variable that indicates what survey the respondents are from. After this, for every coefficient, a similar classification is used, as in the bivariate comparison:</p>
+<div class="cell" data-fig.hight="7">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># designate dependent variables </span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dependent_ols<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"wage"</span>,<span class="st">"educ"</span>,<span class="st">"KWW"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># designate independent variables</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>independent<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"age"</span>,<span class="st">"fatheduc"</span>,<span class="st">"motheduc"</span>,<span class="st">"IQ"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co"># compare the north and south data frames</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>multi_data1_ols<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">multi_compare</span>(<span class="at">df=</span>north, </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">bench=</span>whole_card,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">independent =</span> independent,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">dependent =</span> dependent_ols,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">family =</span> <span class="st">"ols"</span>)  </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># compare the black and white data frames</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>multi_data2_ols<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">multi_compare</span>(<span class="at">df=</span>white, </span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">bench=</span>whole_card,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">independent =</span> independent,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">dependent =</span> dependent_ols,</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">family =</span> <span class="st">"ols"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-fig.hight="7">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the results</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>sampcompR<span class="sc">::</span><span class="fu">plot_multi_compare</span>(<span class="fu">c</span>(<span class="st">"multi_data1_ols"</span>,<span class="st">"multi_data2_ols"</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">plots_label=</span><span class="fu">c</span>(<span class="st">"North"</span>,<span class="st">"White"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tool_SampcompR_files/figure-html/ols_models_plot-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot looks very similar to that of the bivariate comparison, except that every row shows a coefficient while every column shows a model. Here the green color (Same) indicates that a coefficient is not significantly different in any of the models performed with the individual surveys or that the interaction effect in the model on the pooled data frames is not significant. Similarly, yellow (Small Diff) or red (Large Diff) indicates that the coefficient is significant in one of the base models, and the interaction effect is significant in the pooled models. If those conditions are true, it is red (Large Diff) if the coefficients differ in direction or one is the size of the other and yellow (Small Diff) otherwise.</p>
+<p>As we can see here in those models, other than before in the bivariate comparison, there are no differences, at least for those models compared. Also, we can see that the differences on the wage variable we found in previous comparisons are not present in the multivariate model. However, even in multivariate regression, education seems more prone to group differences.</p>
+<p>In addition to the models, we can answer with an ols regression, it would also be interesting to add a model estimating the effect of the coefficients on the probability of marriage. However, for this, we need a logit regression, which now follows.</p>
+<div class="cell" data-fig.hight="7">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># logit dependent variable</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>dependent_log<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">"married"</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># compare the north and south data frames</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>multi_data1_log<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">multi_compare</span>(<span class="at">df=</span>north, </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">bench=</span>whole_card,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">independent =</span> independent,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">dependent =</span> dependent_log,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">family =</span> <span class="st">"logit"</span>)  </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="co"># compare the black and white data frames</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>multi_data2_log<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">multi_compare</span>(<span class="at">df=</span>white, </span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">bench=</span>whole_card,</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">independent =</span> independent,</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">dependent =</span> dependent_log,</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">family =</span> <span class="st">"logit"</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co"># merge those  multi_compare_objects to the ols based objects</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>final_multi1<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">multi_compare_merge</span>(multi_data1_ols,multi_data1_log)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>final_multi2<span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">multi_compare_merge</span>(multi_data2_ols,multi_data2_log)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-fig.hight="7">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plot the models together</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>sampcompR<span class="sc">::</span><span class="fu">plot_multi_compare</span>(<span class="fu">c</span>(<span class="st">"final_multi1"</span>,<span class="st">"final_multi2"</span>),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">plots_label=</span><span class="fu">c</span>(<span class="st">"North"</span>,<span class="st">"White"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Tool_SampcompR_files/figure-html/adding_logit_models_plot-1.png" class="img-fluid figure-img" style="width:100.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>After performing the same comparison with the <code>method = logit</code>, and with the new dependent variable, it would still be interesting to plot all models together. This can be done with the function <code>multi_compare_merge</code>, which adds multi_compare_objects together and use the newly created objects for the plot. This shows us that in addition to the education model, in the marriage model, again no coefficient is different for white respondents from the same models conducted on the whole survey.</p>
+<p>We also add the objects into the provided table function to look at the differences closer.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">### difference table</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>multi_table1 <span class="ot">&lt;-</span> sampcompR<span class="sc">::</span><span class="fu">multi_compare_table</span>(<span class="fu">c</span>(<span class="st">"final_multi1"</span>,<span class="st">"final_multi2"</span>),<span class="at">type=</span><span class="st">"diff"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>multi_table2 <span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">multi_compare_table</span>(<span class="fu">c</span>(<span class="st">"final_multi1"</span>,<span class="st">"final_multi2"</span>),<span class="at">type=</span><span class="st">"dfs"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>multi_table3 <span class="ot">&lt;-</span>sampcompR<span class="sc">::</span><span class="fu">multi_compare_table</span>(<span class="fu">c</span>(<span class="st">"final_multi1"</span>,<span class="st">"final_multi2"</span>),<span class="at">type=</span><span class="st">"benchmarks"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>Table 5: Multivariate Comparison of Subgroups of the Card Sample : Interaction Models</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">data_frames</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">variables</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">wage</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">educ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">KWW</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">married</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">north</td>
+<td style="text-align: center; width: 4em;">age</td>
+<td style="text-align: center; width: 4em;">-0.855</td>
+<td style="text-align: center; width: 4em;">-0.024</td>
+<td style="text-align: center; width: 4em;">0.006</td>
+<td style="text-align: center; width: 4em;">0.005</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(3.257)</td>
+<td style="text-align: center; width: 4em;">(0.025)</td>
+<td style="text-align: center; width: 4em;">(0.078)</td>
+<td style="text-align: center; width: 4em;">(0.033)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">fatheduc</td>
+<td style="text-align: center; width: 4em;">-0.293</td>
+<td style="text-align: center; width: 4em;">-0.024</td>
+<td style="text-align: center; width: 4em;">0.024</td>
+<td style="text-align: center; width: 4em;">-0.004</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(3.682)</td>
+<td style="text-align: center; width: 4em;">(0.028)</td>
+<td style="text-align: center; width: 4em;">(0.088)</td>
+<td style="text-align: center; width: 4em;">(0.035)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">motheduc</td>
+<td style="text-align: center; width: 4em;">2.350</td>
+<td style="text-align: center; width: 4em;">0.012</td>
+<td style="text-align: center; width: 4em;">0.002</td>
+<td style="text-align: center; width: 4em;">0.009</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(4.379)</td>
+<td style="text-align: center; width: 4em;">(0.033)</td>
+<td style="text-align: center; width: 4em;">(0.105)</td>
+<td style="text-align: center; width: 4em;">(0.043)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">IQ</td>
+<td style="text-align: center; width: 4em;">0.480</td>
+<td style="text-align: center; width: 4em;">-0.007</td>
+<td style="text-align: center; width: 4em;">0.013</td>
+<td style="text-align: center; width: 4em;">0.000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(0.691)</td>
+<td style="text-align: center; width: 4em;">(0.005)</td>
+<td style="text-align: center; width: 4em;">(0.017)</td>
+<td style="text-align: center; width: 4em;">(0.006)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">white</td>
+<td style="text-align: center; width: 4em;">age</td>
+<td style="text-align: center; width: 4em;">-0.951</td>
+<td style="text-align: center; width: 4em;">-0.012</td>
+<td style="text-align: center; width: 4em;">-0.017</td>
+<td style="text-align: center; width: 4em;">-0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(3.02)</td>
+<td style="text-align: center; width: 4em;">(0.023)</td>
+<td style="text-align: center; width: 4em;">(0.072)</td>
+<td style="text-align: center; width: 4em;">(0.032)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">fatheduc</td>
+<td style="text-align: center; width: 4em;">0.128</td>
+<td style="text-align: center; width: 4em;">-0.014</td>
+<td style="text-align: center; width: 4em;">0.034</td>
+<td style="text-align: center; width: 4em;">0.015</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(3.287)</td>
+<td style="text-align: center; width: 4em;">(0.025)</td>
+<td style="text-align: center; width: 4em;">(0.078)</td>
+<td style="text-align: center; width: 4em;">(0.032)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">motheduc</td>
+<td style="text-align: center; width: 4em;">0.203</td>
+<td style="text-align: center; width: 4em;">0.010</td>
+<td style="text-align: center; width: 4em;">0.033</td>
+<td style="text-align: center; width: 4em;">-0.025</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(3.915)</td>
+<td style="text-align: center; width: 4em;">(0.029)</td>
+<td style="text-align: center; width: 4em;">(0.093)</td>
+<td style="text-align: center; width: 4em;">(0.039)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">IQ</td>
+<td style="text-align: center; width: 4em;">0.361</td>
+<td style="text-align: center; width: 4em;">-0.009</td>
+<td style="text-align: center; width: 4em;">0.018</td>
+<td style="text-align: center; width: 4em;">0.007</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(0.652)</td>
+<td style="text-align: center; width: 4em;">(0.005)</td>
+<td style="text-align: center; width: 4em;">(0.015)</td>
+<td style="text-align: center; width: 4em;">(0.006)</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p><strong>Table 6: Multivariate Comparison of Subgroups of the Card Sample, North and White Sample Models</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">data_frames</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">variables</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">wage</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">educ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">KWW</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">married</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">north</td>
+<td style="text-align: center; width: 4em;">age</td>
+<td style="text-align: center; width: 4em;">33.600***</td>
+<td style="text-align: center; width: 4em;">0.099***</td>
+<td style="text-align: center; width: 4em;">1.100***</td>
+<td style="text-align: center; width: 4em;">0.168***</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(2.539)</td>
+<td style="text-align: center; width: 4em;">(0.019)</td>
+<td style="text-align: center; width: 4em;">(0.06)</td>
+<td style="text-align: center; width: 4em;">(0.026)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">fatheduc</td>
+<td style="text-align: center; width: 4em;">5.620</td>
+<td style="text-align: center; width: 4em;">0.156***</td>
+<td style="text-align: center; width: 4em;">0.238***</td>
+<td style="text-align: center; width: 4em;">-0.016</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(2.949)</td>
+<td style="text-align: center; width: 4em;">(0.022)</td>
+<td style="text-align: center; width: 4em;">(0.07)</td>
+<td style="text-align: center; width: 4em;">(0.028)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">motheduc</td>
+<td style="text-align: center; width: 4em;">2.810</td>
+<td style="text-align: center; width: 4em;">0.085**</td>
+<td style="text-align: center; width: 4em;">0.176*</td>
+<td style="text-align: center; width: 4em;">-0.066</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(3.518)</td>
+<td style="text-align: center; width: 4em;">(0.026)</td>
+<td style="text-align: center; width: 4em;">(0.083)</td>
+<td style="text-align: center; width: 4em;">(0.034)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">IQ</td>
+<td style="text-align: center; width: 4em;">2.050***</td>
+<td style="text-align: center; width: 4em;">0.068***</td>
+<td style="text-align: center; width: 4em;">0.169***</td>
+<td style="text-align: center; width: 4em;">-0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(0.545)</td>
+<td style="text-align: center; width: 4em;">(0.004)</td>
+<td style="text-align: center; width: 4em;">(0.013)</td>
+<td style="text-align: center; width: 4em;">(0.005)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">white</td>
+<td style="text-align: center; width: 4em;">age</td>
+<td style="text-align: center; width: 4em;">33.700***</td>
+<td style="text-align: center; width: 4em;">0.087***</td>
+<td style="text-align: center; width: 4em;">1.130***</td>
+<td style="text-align: center; width: 4em;">0.174***</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(2.21)</td>
+<td style="text-align: center; width: 4em;">(0.016)</td>
+<td style="text-align: center; width: 4em;">(0.052)</td>
+<td style="text-align: center; width: 4em;">(0.023)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">fatheduc</td>
+<td style="text-align: center; width: 4em;">5.200*</td>
+<td style="text-align: center; width: 4em;">0.147***</td>
+<td style="text-align: center; width: 4em;">0.228***</td>
+<td style="text-align: center; width: 4em;">-0.035</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(2.415)</td>
+<td style="text-align: center; width: 4em;">(0.018)</td>
+<td style="text-align: center; width: 4em;">(0.056)</td>
+<td style="text-align: center; width: 4em;">(0.023)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">motheduc</td>
+<td style="text-align: center; width: 4em;">4.950</td>
+<td style="text-align: center; width: 4em;">0.088***</td>
+<td style="text-align: center; width: 4em;">0.145*</td>
+<td style="text-align: center; width: 4em;">-0.032</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(2.894)</td>
+<td style="text-align: center; width: 4em;">(0.021)</td>
+<td style="text-align: center; width: 4em;">(0.067)</td>
+<td style="text-align: center; width: 4em;">(0.028)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">IQ</td>
+<td style="text-align: center; width: 4em;">2.170***</td>
+<td style="text-align: center; width: 4em;">0.070***</td>
+<td style="text-align: center; width: 4em;">0.164***</td>
+<td style="text-align: center; width: 4em;">-0.009</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(0.491)</td>
+<td style="text-align: center; width: 4em;">(0.004)</td>
+<td style="text-align: center; width: 4em;">(0.011)</td>
+<td style="text-align: center; width: 4em;">(0.005)</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p><strong>Table 7: Multivariate Comparison of Subgroups of the Card Sample, Whole Sample Models</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-hover table-condensed caption-top table-sm small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">data_frames</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">variables</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">wage</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">educ</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">KWW</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">married</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; width: 4em;">whole_card</td>
+<td style="text-align: center; width: 4em;">age</td>
+<td style="text-align: center; width: 4em;">32.700***</td>
+<td style="text-align: center; width: 4em;">0.075***</td>
+<td style="text-align: center; width: 4em;">1.110***</td>
+<td style="text-align: center; width: 4em;">0.173***</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(2.344)</td>
+<td style="text-align: center; width: 4em;">(0.016)</td>
+<td style="text-align: center; width: 4em;">(0.048)</td>
+<td style="text-align: center; width: 4em;">(0.022)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">fatheduc</td>
+<td style="text-align: center; width: 4em;">5.330*</td>
+<td style="text-align: center; width: 4em;">0.132***</td>
+<td style="text-align: center; width: 4em;">0.262***</td>
+<td style="text-align: center; width: 4em;">-0.020</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(2.243)</td>
+<td style="text-align: center; width: 4em;">(0.018)</td>
+<td style="text-align: center; width: 4em;">(0.053)</td>
+<td style="text-align: center; width: 4em;">(0.021)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">motheduc</td>
+<td style="text-align: center; width: 4em;">5.160</td>
+<td style="text-align: center; width: 4em;">0.098***</td>
+<td style="text-align: center; width: 4em;">0.178**</td>
+<td style="text-align: center; width: 4em;">-0.057*</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(2.735)</td>
+<td style="text-align: center; width: 4em;">(0.021)</td>
+<td style="text-align: center; width: 4em;">(0.062)</td>
+<td style="text-align: center; width: 4em;">(0.027)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">IQ</td>
+<td style="text-align: center; width: 4em;">2.530***</td>
+<td style="text-align: center; width: 4em;">0.061***</td>
+<td style="text-align: center; width: 4em;">0.182***</td>
+<td style="text-align: center; width: 4em;">-0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 4em;"></td>
+<td style="text-align: center; width: 4em;"></td>
+<td style="text-align: center; width: 4em;">(0.44)</td>
+<td style="text-align: center; width: 4em;">(0.003)</td>
+<td style="text-align: center; width: 4em;">(0.011)</td>
+<td style="text-align: center; width: 4em;">(0.004)</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>Overall the comparison shows no differences between the sub-groups and the whole survey. Suppose those models play a role in the overall analyses of a research project, one would come to similar results using any survey. In other words, for those multivariate models, we would not find any bias, had we only sampled parts of the population. Nonetheless, there could be other models, where bias can be prevalent. <!--subheadings for tool application can be specified "freely" and depending on structure of your tool --></p>
+</section>
+</section>
+<section id="conclusion-and-recommendations" class="level1">
+<h1>Conclusion and recommendations</h1>
+<p><strong>Univariate Bias</strong> In our exemplary comparison we found that all variables of comparison, except for age would be significantly biased, if one would generalize the estimates, of respondents living in the north to the whole population. Similar amounts of bias would be encountered, when generalizing the results of white respondents to the whole population.</p>
+<p><strong>Bivariate Bias</strong> Similarly, we also find bias in Pearson’s r estimates, when generalizing the results to the whole population. However, we also see that many of the differences are rather small, and in most of the cases, one would come to similar conclusions using any survey. Nonetheless, as shown for the north survey, one often would underestimate some correlations, especially regarding wage, when one generalize this survey to the whole population.</p>
+<p><strong>Multivariate Bias</strong> Finally, for the multivariate models, compared one would get similar results using only the north or white survey, instead of the whole survey. The reason for this unbiased, even in the wage model might be that controlling for the demographic variables, such as age, IQ and parental education, the bias in the separate correlations is reduced.</p>
+<p><strong>Other use cases</strong> Of cause, the example cases in this tool-description, are only for demonstration purpose, however there are very similar examples, that one could encounter in the real world of survey science. Taking for example a situation where one has gathered a mixed mode panel survey, with an inexpensive online and an expensive offline mode. Then it might be interesting to know how much bias one would introduce into the survey, when, in further waves only continuing the online mode. Here a similar bias estimation could be worth it. Other applications would be the comparison between a full sample and the actually recruited respondents, to evaluate nonresponse bias, or comparing a freshly recruited panel against the same panel, after several years, to evaluate the effect attrition had on the panel. When external benchmark data is available, one could also compare several recruitment methods, such as a probability and a non-probability survey, to evaluate if both surveys lead to similar amounts of bias or not <span class="citation" data-cites="rohrComparingAccuracyUnivariate2024a">(i.e., <a href="#ref-rohrComparingAccuracyUnivariate2024a" role="doc-biblioref">Björn Rohr, Silber, and Felderer 2024</a>)</span>.</p>
+<p><strong>Recommendation:</strong> As acknowledged by the Total Survey Error Framework <span class="citation" data-cites="grovesTotalSurveyError2010">(<a href="#ref-grovesTotalSurveyError2010" role="doc-biblioref">Groves and Lyberg 2010</a>)</span>, any survey estimate has potential for. While often this potential bias is only mentioned as a limitation of the study, often one could go a step further.</p>
+<ul>
+<li><p>Although it is seldom possible to measure the bias for all variables of interest, due to a lack of benchmarks, it might be possible to perform at least some bias analyses, e.g., for demographic variables. Reporting such findings as additional analyses in the Appendix would not only indicate transparancy in research, but might also take some weight of limitations. Although unbiased estimates for one variable do not guarantee for other variables to be unbiased, they might at least hint at it, especially when one can reasonably argue that the variables are correlated.</p></li>
+<li><p>Although we have shown only a simple use case for this tool, SampcompR is also applicable to more complex data, as it can also make use of strata, cluster information, and weights. Further raking and post-stratification weights can be calculated during comparison, and bootstrap can be used to evaluate the difference between survey and benchmark. The later method is often recommended for complex surveys including nonprobability surveys <span class="citation" data-cites="mcpheeDataQualityMetrics2022">(i.e., <a href="#ref-mcpheeDataQualityMetrics2022" role="doc-biblioref">McPhee et al. 2022</a>)</span></p></li>
+</ul>
+</section>
+<section id="references" class="level1 unnumbered">
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-grovesTotalSurveyError2010" class="csl-entry" role="listitem">
+Groves, R. M., and L. Lyberg. 2010. <span>“Total <span>Survey</span> <span>Error</span>: <span>Past</span>, <span>Present</span>, and <span>Future</span>.”</span> <em>Public Opinion Quarterly</em> 74 (5): 849–79. <a href="https://doi.org/10.1093/poq/nfq065">https://doi.org/10.1093/poq/nfq065</a>.
+</div>
+<div id="ref-mcpheeDataQualityMetrics2022" class="csl-entry" role="listitem">
+McPhee, Cameron, Frances Barlas, Nancy Brigham, Jill Darling, David Dutwin, Chris Jackson, Mickey Jackson, et al. 2022. <span>“Data <span>Quality</span> <span>Metrics</span> for <span>Online</span> <span>Samples</span>: <span>Considerations</span> for <span>Study</span> <span>Design</span> and <span>Analysis</span>.”</span> {AAPOR} {Task} {Force} {Report}. <a href="https://aapor.org/wp-content/uploads/2023/02/Task-Force-Report-FINAL.pdf">https://aapor.org/wp-content/uploads/2023/02/Task-Force-Report-FINAL.pdf</a>.
+</div>
+<div id="ref-rohrSampcompRComparingVisualizing2024" class="csl-entry" role="listitem">
+Rohr, Bjoern, and Barbara Felderer. 2024. <em><span class="nocase">sampcompR</span>: <span>Comparing</span> and <span>Visualizing</span> <span>Differences</span> <span>Between</span> <span>Surveys</span></em>. <a href="https://CRAN.R-project.org/package=sampcompR">https://CRAN.R-project.org/package=sampcompR</a>.
+</div>
+<div id="ref-rohrComparingAccuracyUnivariate2024a" class="csl-entry" role="listitem">
+Rohr, Björn, Henning Silber, and Barbara Felderer. 2024. <span>“Comparing the <span>Accuracy</span> of <span>Univariate</span>, <span>Bivariate</span>, and <span>Multivariate Estimates</span> Across <span>Probability</span> and <span>Nonprobability Surveys</span> with <span>Population Benchmarks</span>.”</span> <em>Sociological Methodology</em>, September, 00811750241280963. <a href="https://doi.org/10.1177/00811750241280963">https://doi.org/10.1177/00811750241280963</a>.
+</div>
+<div id="ref-SheaWooldridge" class="csl-entry" role="listitem">
+Shea, Justin M. 2024. <em>Wooldridge: 115 Data Sets from "Introductory Econometrics: A Modern Approach, 7e" by Jeffrey m. Wooldridge</em>. <a href="https://CRAN.R-project.org/package=wooldridge">https://CRAN.R-project.org/package=wooldridge</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

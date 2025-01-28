@@ -1,0 +1,37 @@
+/* Change border color to black in the header */
+.table.table-sm> thead > tr > th {
+  border-color: black;
+}
+
+/* Remove borders within the table body (tbody) */
+.table.table-sm> tbody > tr > td {
+  border: none;
+}
+
+/* Add a top border to the table header row */
+.table.table-sm thead tr:first-child { 
+  border-top: 2px solid black;
+}
+
+/* Add a bottom border to the last row in the table body */
+.table.table-sm tbody tr:last-child {
+  border-bottom: 2px solid black;
+}
+
+/* Make the table header row a normal weight; not bold */
+.table.table-sm th {
+  font-weight: normal;
+}
+
+/* Make the caption italic and black */
+.table.table-sm caption {
+  font-style: italic;
+  color: black;
+}
+
+/* Style the table footer note (from tfoot) */
+.table tfoot td {
+  font-style: italic;
+  color: black;
+  padding: 10px;
+}
