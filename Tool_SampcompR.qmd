@@ -2,11 +2,14 @@
 title: "SampcompR for Response Bias Estimation"
 author:
   - name: "Rohr Björn"
-image: images/logo_sampcompR.png #takes from a folder "images" in your github repository the tool icon file  
+image: images/logo_sampcompR.png 
 date: "r format(Sys.Date(), '%B %d, %Y')"
 format:
-  html: default
-  pdf: default
+  html:     
+    toc: true
+    toc-location: left
+    toc-depth: 2
+    embed-resources: true
 bibliography: references.bib
 biblio-style: apa
 

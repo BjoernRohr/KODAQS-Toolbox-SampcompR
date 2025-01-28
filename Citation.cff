@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "Please cite this work as follows:"
+title: "SampcompR for Response Bias Estimation"
+authors:
+  - name: Björn Rohr
+    affiliation: GESIS Leibnitz Institute for the Social Sciences
+date-released: "2025-01-28"
+version: 1.0.0
+url: "https://github.com/kraemefe/resquin-tool-application"
