@@ -3,7 +3,7 @@ title: "SampcompR for Response Bias Estimation"
 author:
   - name: "Rohr Björn"
 image: images/logo_sampcompR.png 
-date: "r format(Sys.Date(), '%B %d, %Y')"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 format:
   html:     
     toc: true
