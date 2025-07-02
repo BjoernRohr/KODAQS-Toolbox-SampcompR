@@ -1,5 +1,6 @@
 ---
-title: "SampcompR for Response Bias Estimation"
+title: "SampCompR"
+subtitle: "SampcompR for Response Bias Estimation"
 author:
   - name: "Rohr Björn"
 image: images/logo_sampcompR.png 
